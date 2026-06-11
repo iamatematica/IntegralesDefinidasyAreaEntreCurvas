@@ -1207,10 +1207,10 @@
         <div class="bg-white/8 rounded-2xl p-5 border border-white/10">
           <div class="w-10 h-10 rounded-full flex items-center justify-center mb-3 font-display text-xl font-bold text-white"
             style="background:#b45309;">1</div>
-          <h4 class="font-display text-xl text-white mb-2">Identificar las curvas</h4>
+          <h4 class="font-display text-xl text-white mb-2">¿Los límites están dados?</h4>
           <p class="font-body text-white/60 text-sm leading-relaxed">
-            ¿Cuáles son \(f\) y \(g\)?
-            ¿Se dan los límites \(a\) y \(b\) o hay que encontrarlos?
+            Si \(a\) y \(b\) aparecen en el enunciado, son los límites de integración.
+            Si no, hay que calcularlos resolviendo \(f(x) = g(x)\).
           </p>
         </div>
 
@@ -1245,6 +1245,20 @@
         </div>
 
       </div>
+
+      <!-- Aclaración de validez -->
+      <div class="mt-6 flex items-start gap-3 rounded-xl p-4"
+        style="background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);">
+        <span class="text-lg flex-shrink-0 mt-0.5">⚠️</span>
+        <p class="font-body text-white/65 text-sm leading-relaxed">
+          Estos 4 pasos aplican directamente cuando la función superior (techo) y la función inferior (piso)
+          <strong class="text-white/85">no se intercambian</strong> dentro del intervalo de integración.
+          Si las curvas se cruzan en un punto interior, la función superior y la inferior se invierten
+          a partir de ese cruce — en ese caso hay que subdividir el intervalo y aplicar el protocolo
+          por separado en cada subintervalo. Eso es exactamente lo que resuelven los Casos C y D.
+        </p>
+      </div>
+
     </div>
 
     <!-- Los casos -->
@@ -1327,6 +1341,9 @@
             <strong class="text-ink">Ejemplo:</strong>
             Área entre \(f(x) = 4 - x^2\) y \(g(x) = x + 2\).
           </p>
+          <!-- Canvas Caso B -->
+          <canvas id="canvas-casoB" class="w-full rounded-xl border border-black/8 mb-4"
+            style="background:#f8fafc; display:block;"></canvas>
           <p class="font-body text-slate text-sm mb-2">
             Intersecciones: \(4 - x^2 = x + 2 \Rightarrow x^2 + x - 2 = 0 \Rightarrow x = -2,\; x = 1\).
           </p>
@@ -1374,13 +1391,58 @@
             <strong class="text-ink">Ejemplo:</strong>
             Área entre \(f(x) = \sin x\) y \(g(x) = \cos x\) en \([0,\,\pi]\).
           </p>
-          <p class="font-body text-slate text-sm mb-2">
-            Se cruzan en \(x = \tfrac{\pi}{4}\) (donde \(\sin = \cos\)).
-            En \([0, \tfrac{\pi}{4}]\): \(\cos \geq \sin\). En \([\tfrac{\pi}{4}, \pi]\): \(\sin \geq \cos\).
+
+          <!-- Canvas Caso C -->
+          <canvas id="canvas-casoC" class="w-full rounded-xl border border-black/8 mb-5"
+            style="background:#f8fafc; display:block;"></canvas>
+
+          <!-- Paso 1: identificar el cruce -->
+          <p class="font-body text-slate text-sm mb-3">
+            Las curvas se cruzan en \(x = \tfrac{\pi}{4}\), donde \(\sin x = \cos x\).
+            Eso divide el intervalo en dos regiones con distinto orden:
           </p>
-          \[A = \int_0^{\pi/4}(\cos x - \sin x)\,dx + \int_{\pi/4}^{\pi}(\sin x - \cos x)\,dx\]
-          \[= \bigl[\sin x + \cos x\bigr]_0^{\pi/4} + \bigl[-\cos x - \sin x\bigr]_{\pi/4}^{\pi}
-             = (\sqrt{2}-1) + (1+\sqrt{2}) = 2\sqrt{2}\]
+
+          <!-- Planteo estratégico -->
+          <div class="rounded-xl p-4 mb-4 text-center" style="background:rgba(14,28,51,.04); border:1px solid rgba(14,28,51,.1);">
+            \[A = A_1 + A_2\]
+          </div>
+
+          <!-- A₁ -->
+          <div class="rounded-xl p-4 mb-3" style="background:rgba(14,122,104,.07); border:1px solid rgba(14,122,104,.25);">
+            <p class="font-mono text-xs text-jade mb-2 tracking-wider uppercase">A₁ — región \([0,\,\pi/4]\)</p>
+            <p class="font-body text-slate text-sm mb-2">
+              Verificación: \(x_0 = \tfrac{\pi}{8}\) → \(\cos\tfrac{\pi}{8} \approx 0.92\) y \(\sin\tfrac{\pi}{8} \approx 0.38\),
+              entonces \(\cos x \geq \sin x\) en \([0, \pi/4]\).
+            </p>
+            <p class="font-body text-slate text-sm mb-2">
+              Función superior (techo): \(\cos x\). Función inferior (piso): \(\sin x\).
+            </p>
+            \[A_1 = \int_0^{\pi/4}(\cos x - \sin x)\,dx
+              = \Big[\sin x + \cos x\Big]_0^{\pi/4}
+              = \left(\frac{\sqrt{2}}{2}+\frac{\sqrt{2}}{2}\right) - (0+1)
+              = \sqrt{2} - 1\]
+          </div>
+
+          <!-- A₂ -->
+          <div class="rounded-xl p-4 mb-4" style="background:rgba(155,58,110,.07); border:1px solid rgba(155,58,110,.25);">
+            <p class="font-mono text-xs mb-2 tracking-wider uppercase" style="color:#9b3a6e;">A₂ — región \([\pi/4,\,\pi]\)</p>
+            <p class="font-body text-slate text-sm mb-2">
+              Verificación: \(x_0 = \tfrac{\pi}{2}\) → \(\sin\tfrac{\pi}{2} = 1\) y \(\cos\tfrac{\pi}{2} = 0\),
+              entonces \(\sin x \geq \cos x\) en \([\pi/4, \pi]\).
+            </p>
+            <p class="font-body text-slate text-sm mb-2">
+              Función superior (techo): \(\sin x\). Función inferior (piso): \(\cos x\).
+            </p>
+            \[A_2 = \int_{\pi/4}^{\pi}(\sin x - \cos x)\,dx
+              = \Big[-\cos x - \sin x\Big]_{\pi/4}^{\pi}
+              = (1 - 0) - \left(-\frac{\sqrt{2}}{2}-\frac{\sqrt{2}}{2}\right)
+              = 1 + \sqrt{2}\]
+          </div>
+
+          <!-- Resultado final -->
+          <div class="rounded-xl p-4 text-center" style="background:rgba(201,147,58,.1); border:1.5px solid rgba(201,147,58,.35);">
+            \[A = A_1 + A_2 = (\sqrt{2}-1) + (1+\sqrt{2}) = 2\sqrt{2}\]
+          </div>
         </div>
       </div>
     </div>
@@ -1428,18 +1490,66 @@
         <div class="bg-white rounded-xl p-5 border border-black/5">
           <p class="font-body text-slate text-sm mb-3">
             <strong class="text-ink">Ejemplo:</strong>
-            Área total entre \(f(x) = \sin x\) y \(g(x) = 0\) en \([0,\,2\pi]\).
+            Área total entre \(f(x) = \sin x\) y el eje \(x\) en \([0,\,2\pi]\).
           </p>
-          <p class="font-body text-slate text-sm mb-2">
-            Intersecciones en \([0, 2\pi]\): \(x = 0\), \(x = \pi\), \(x = 2\pi\).
-            En \([0,\pi]\): \(\sin x \geq 0\). En \([\pi, 2\pi]\): \(\sin x \leq 0\).
+
+          <!-- Canvas Caso D -->
+          <canvas id="canvas-casoD" class="w-full rounded-xl border border-black/8 mb-5"
+            style="background:#f8fafc; display:block;"></canvas>
+
+          <!-- Identificación de regiones -->
+          <p class="font-body text-slate text-sm mb-3">
+            La curva cruza el eje en \(x = \pi\), dividiendo el intervalo en dos regiones
+            con signos opuestos. La integral algebraica directa daría cero — hay que separar:
           </p>
-          \[A = \int_0^{\pi}\sin x\,dx + \int_{\pi}^{2\pi}(-\sin x)\,dx
-             = \bigl[-\cos x\bigr]_0^{\pi} + \bigl[\cos x\bigr]_{\pi}^{2\pi}
-             = 2 + 2 = 4\]
-          <p class="font-body text-slate text-xs mt-2 p-2 bg-amber-50 rounded border border-amber-200">
+
+          <!-- Planteo estratégico -->
+          <div class="rounded-xl p-4 mb-4 text-center" style="background:rgba(14,28,51,.04); border:1px solid rgba(14,28,51,.1);">
+            \[A = A_1 + A_2\]
+          </div>
+
+          <!-- A₁ -->
+          <div class="rounded-xl p-4 mb-3" style="background:rgba(14,122,104,.07); border:1px solid rgba(14,122,104,.25);">
+            <p class="font-mono text-xs text-jade mb-2 tracking-wider uppercase">A₁ — región \([0,\,\pi]\)</p>
+            <p class="font-body text-slate text-sm mb-2">
+              Verificación: \(f\!\left(\tfrac{\pi}{2}\right) = \sin\tfrac{\pi}{2} = 1 > 0\),
+              entonces \(\sin x \geq 0\) en \([0,\pi]\).
+            </p>
+            <p class="font-body text-slate text-sm mb-2">
+              Función superior (techo): \(\sin x\). Función inferior (piso): \(0\).
+            </p>
+            \[A_1 = \int_0^{\pi}\sin x\,dx
+              = \Big[-\cos x\Big]_0^{\pi}
+              = (-\cos\pi) - (-\cos 0)
+              = 1 + 1 = 2\]
+          </div>
+
+          <!-- A₂ -->
+          <div class="rounded-xl p-4 mb-4" style="background:rgba(155,58,110,.07); border:1px solid rgba(155,58,110,.25);">
+            <p class="font-mono text-xs mb-2 tracking-wider uppercase" style="color:#9b3a6e;">A₂ — región \([\pi,\,2\pi]\)</p>
+            <p class="font-body text-slate text-sm mb-2">
+              Verificación: \(f\!\left(\tfrac{3\pi}{2}\right) = \sin\tfrac{3\pi}{2} = -1 < 0\),
+              entonces \(\sin x \leq 0\) en \([\pi, 2\pi]\).
+            </p>
+            <p class="font-body text-slate text-sm mb-2">
+              Función superior (techo): \(0\). Función inferior (piso): \(\sin x\).
+              Se integra la diferencia función superior − función inferior:
+            </p>
+            \[A_2 = \int_{\pi}^{2\pi}\bigl[0 - \sin x\bigr]\,dx
+              = \int_{\pi}^{2\pi}(-\sin x)\,dx
+              = \Big[\cos x\Big]_{\pi}^{2\pi}
+              = \cos 2\pi - \cos\pi
+              = 1 - (-1) = 2\]
+          </div>
+
+          <!-- Resultado final -->
+          <div class="rounded-xl p-4 mb-3 text-center" style="background:rgba(201,147,58,.1); border:1.5px solid rgba(201,147,58,.35);">
+            \[A = A_1 + A_2 = 2 + 2 = 4\]
+          </div>
+
+          <p class="font-body text-slate text-xs p-3 bg-amber-50 rounded-lg border border-amber-200">
             Comparar con \(\int_0^{2\pi}\sin x\,dx = 0\): la integral algebraica vale cero
-            porque las dos mitades se cancelan. El área geométrica es 4.
+            porque \(A_1\) y \(A_2\) tienen signos opuestos y se cancelan. El área geométrica es 4.
           </p>
         </div>
       </div>
@@ -1713,7 +1823,7 @@
       style="border-color:#c9933a;">
       <div class="flex items-center gap-3 mb-4">
         <span class="section-badge bg-gold text-white">Ejercicio 2</span>
-        <span class="font-mono text-xs text-slate">Función con cambio de signo</span>
+        <span class="font-mono text-xs text-slate">Área entre la curva y el eje x — función bajo el eje</span>
       </div>
       <p class="font-body text-slate leading-relaxed mb-4">
         Calculá el área geométrica encerrada entre la curva \(f(x) = x^2 - 4\)
@@ -1766,15 +1876,41 @@
         </button>
         <div id="sol2" class="collapsible mt-3">
           <div class="bg-amber-50 border border-amber-200 rounded-xl p-5">
-            <p class="font-body text-slate text-sm mb-2">
+            <p class="font-body text-slate text-sm mb-4">
               <strong class="text-ink">Solución:</strong>
-              Los ceros son \(x = \pm 2\). \(f(0) = -4 < 0\), entonces \(f \leq 0\) en todo \([-2,2]\).
             </p>
-            \[A = -\int_{-2}^{2}(x^2 - 4)\,dx = -\left[\frac{x^3}{3} - 4x\right]_{-2}^{2}
-               = -\!\left[-\frac{16}{3} - \frac{16}{3}\right] = \frac{32}{3}\]
-            <p class="font-body text-slate text-xs mt-3 p-3 bg-white rounded-lg border border-amber-100">
-              💡 La parábola queda enteramente bajo el eje en \([-2,2]\). La integral algebraica da \(-\tfrac{32}{3}\);
-              el área geométrica es su opuesto: \(\tfrac{32}{3} \approx 10{,}67\).
+
+            <!-- Verificación -->
+            <div class="rounded-xl p-4 mb-3" style="background:rgba(14,28,51,.04); border:1px solid rgba(14,28,51,.1);">
+              <p class="font-mono text-xs text-slate/60 tracking-wider uppercase mb-2">Verificación de signo</p>
+              <p class="font-body text-slate text-sm">
+                Los ceros de \(f(x) = x^2 - 4\) son \(x = \pm 2\), que coinciden con los extremos del intervalo.
+                Evaluando en \(x_0 = 0\): \(f(0) = -4 < 0\), entonces \(f \leq 0\) en todo \([-2,2]\).
+              </p>
+            </div>
+
+            <!-- Función superior e inferior -->
+            <div class="rounded-xl p-4 mb-3" style="background:rgba(155,58,110,.07); border:1px solid rgba(155,58,110,.25);">
+              <p class="font-mono text-xs tracking-wider uppercase mb-2" style="color:#9b3a6e;">Función superior (techo) y función inferior (piso)</p>
+              <p class="font-body text-slate text-sm">
+                Como \(f(x) \leq 0\) en todo el intervalo, el eje \(x\) está por encima de la curva.
+                Función superior (techo): \(g(x) = 0\). Función inferior (piso): \(f(x) = x^2 - 4\).
+              </p>
+            </div>
+
+            <!-- Cálculo -->
+            <div class="rounded-xl p-4 mb-3" style="background:rgba(14,28,51,.04); border:1px solid rgba(14,28,51,.1);">
+              <p class="font-mono text-xs text-slate/60 tracking-wider uppercase mb-2">Planteo e integración</p>
+              \[A = \int_{-2}^{2}\bigl[0 - (x^2-4)\bigr]\,dx
+                 = \int_{-2}^{2}(4 - x^2)\,dx
+                 = \left[4x - \frac{x^3}{3}\right]_{-2}^{2}
+                 = \left(8 - \frac{8}{3}\right) - \left(-8 + \frac{8}{3}\right) = \frac{32}{3}\]
+            </div>
+
+            <p class="font-body text-slate text-xs p-3 bg-white rounded-lg border border-amber-100">
+              💡 La parábola queda enteramente bajo el eje en \([-2,2]\). Plantear \([0 - f(x)]\)
+              es equivalente a \(-f(x)\) pero deja explícito el razonamiento: función superior menos función inferior.
+              El área geométrica es \(\tfrac{32}{3} \approx 10{,}67\).
             </p>
           </div>
         </div>
@@ -1852,52 +1988,51 @@
       </div>
     </div>
 
-    <!-- Ejercicio 4 — desafío -->
-    <div class="practice-card rounded-2xl p-8 mb-4 text-white shadow-sm"
-      style="background:#0e1c33; border-color:#c9933a;">
+    <!-- Ejercicio 4 — dos parábolas -->
+    <div class="practice-card bg-white rounded-2xl p-8 mb-8 shadow-sm"
+      style="border-color:#b45309;">
       <div class="flex items-center gap-3 mb-4">
-        <span class="section-badge bg-gold text-white">Desafío 1</span>
-        <span class="font-mono text-xs text-white/50">Integral con sustitución + Barrow</span>
+        <span class="section-badge text-white" style="background:#b45309;">Ejercicio 4</span>
+        <span class="font-mono text-xs text-slate">Área entre dos parábolas — Caso B</span>
       </div>
-      <p class="font-body text-white/80 leading-relaxed mb-4">
-        Calculá \(\displaystyle\int_0^1 x\,e^{x^2}\,dx\).
-      </p>
-      <p class="font-body text-white/45 text-xs mb-5">
-        Ayuda: pensá qué sustitución simplifica el exponente. No olvidés transformar los límites.
+      <p class="font-body text-slate leading-relaxed mb-4">
+        Calculá el área de la región limitada por las curvas:
+        \[y = -x^2 + 9 \qquad \text{y} \qquad y = x^2 - 9\]
       </p>
 
       <!-- Botón gráfica -->
-      <div class="mb-3">
-        <button onclick="togglePanel('graph4')"
-          class="font-body text-sm text-white/70 border border-white/20 rounded-xl px-5 py-2.5
-                 hover:bg-white/5 transition cursor-pointer bg-transparent flex items-center gap-2">
-          <span id="graph4-label">📈 Ver gráfica</span>
+      <div class="mt-5">
+        <button onclick="togglePanel('graph6')"
+          class="font-body text-sm text-ink border border-black/20 rounded-xl px-5 py-2.5
+                 hover:bg-black/5 transition cursor-pointer bg-transparent flex items-center gap-2">
+          <span id="graph6-label">📈 Ver gráfica</span>
           <span class="text-xs opacity-50">↓</span>
         </button>
-        <div id="graph4" class="collapsible mt-3">
-          <canvas id="canvas-d1" class="w-full rounded-xl border border-white/10"
-            style="background:rgba(255,255,255,.04); display:block;"></canvas>
+        <div id="graph6" class="collapsible mt-3">
+          <canvas id="canvas-ej4" class="w-full rounded-xl border border-black/8"
+            style="background:#f8fafc; display:block;"></canvas>
         </div>
       </div>
 
       <!-- Pista -->
-      <div class="mt-2">
-        <button onclick="togglePanel('hint4')"
-          class="font-body text-sm text-white/70 border border-white/20 rounded-xl px-5 py-2.5
-                 hover:bg-white/5 transition cursor-pointer bg-transparent flex items-center gap-2">
-          <span id="hint4-label">Pedir una pista</span>
+      <div class="mt-5">
+        <button onclick="togglePanel('hint6')"
+          class="font-body text-sm text-jade border border-jade/40 rounded-xl px-5 py-2.5
+                 hover:bg-jade/5 transition cursor-pointer bg-transparent flex items-center gap-2">
+          <span id="hint6-label">Pedir una pista</span>
           <span class="text-xs opacity-60">↓</span>
         </button>
-        <div id="hint4" class="collapsible mt-3">
-          <div class="bg-white/5 border border-white/15 rounded-xl p-5">
-            <p class="font-body text-white/70 text-sm leading-relaxed mb-2">
-              <strong class="text-white/90">Pista:</strong>
-              Hacé la sustitución \(u = x^2\). Entonces \(du = 2x\,dx\),
-              o sea \(x\,dx = \tfrac{du}{2}\).
+        <div id="hint6" class="collapsible mt-3">
+          <div class="bg-jade/5 border border-jade/20 rounded-xl p-5">
+            <p class="font-body text-slate text-sm leading-relaxed mb-2">
+              <strong class="text-jade">Paso 1:</strong>
+              Igualá las dos expresiones para hallar las intersecciones:
+              \(-x^2 + 9 = x^2 - 9\). Esas soluciones son los límites de integración.
             </p>
-            <p class="font-body text-white/70 text-sm">
-              Transformá los límites: cuando \(x = 0\), \(u = 0\);
-              cuando \(x = 1\), \(u = 1\). La integral queda en términos de \(u\).
+            <p class="font-body text-slate text-sm">
+              <strong class="text-jade">Paso 2:</strong>
+              Verificá con un punto interior cuál parábola está arriba.
+              Las dos parábolas son simétricas respecto al eje \(x\) — eso puede simplificar el cálculo.
             </p>
           </div>
         </div>
@@ -1905,74 +2040,101 @@
 
       <!-- Solución -->
       <div class="mt-3">
-        <button onclick="togglePanel('sol4')"
+        <button onclick="togglePanel('sol6')"
           class="font-body text-sm text-gold border border-gold/40 rounded-xl px-5 py-2.5
                  hover:bg-gold/5 transition cursor-pointer bg-transparent flex items-center gap-2">
-          <span id="sol4-label">Ver solución completa</span>
+          <span id="sol6-label">Ver solución completa</span>
           <span class="text-xs opacity-60">↓</span>
         </button>
-        <div id="sol4" class="collapsible mt-3">
-          <div class="rounded-xl p-5" style="background:rgba(201,147,58,.12); border:1px solid rgba(201,147,58,.3);">
-            <p class="font-body text-white/80 text-sm mb-2">
-              <strong class="text-gold">Solución:</strong>
-              Sustitución \(u = x^2\), \(du = 2x\,dx\). Límites: \(x=0 \Rightarrow u=0\); \(x=1 \Rightarrow u=1\).
+        <div id="sol6" class="collapsible mt-3">
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-5">
+            <p class="font-body text-slate text-sm mb-4"><strong class="text-ink">Solución:</strong></p>
+
+            <!-- Intersecciones -->
+            <div class="rounded-xl p-4 mb-3" style="background:rgba(14,28,51,.04); border:1px solid rgba(14,28,51,.1);">
+              <p class="font-mono text-xs text-slate/60 tracking-wider uppercase mb-2">Intersecciones</p>
+              \[-x^2 + 9 = x^2 - 9 \;\Rightarrow\; 18 = 2x^2 \;\Rightarrow\; x^2 = 9 \;\Rightarrow\; x = \pm 3\]
+            </div>
+
+            <!-- Verificación -->
+            <div class="rounded-xl p-4 mb-3" style="background:rgba(180,83,9,.07); border:1px solid rgba(180,83,9,.25);">
+              <p class="font-mono text-xs tracking-wider uppercase mb-2" style="color:#b45309;">Verificación en \(x_0 = 0\)</p>
+              <p class="font-body text-slate text-sm mb-1">
+                \(f(0) = 9\) y \(g(0) = -9\). Entonces \(f \geq g\) en \([-3, 3]\).
+              </p>
+              <p class="font-body text-slate text-sm">
+                Función superior (techo): \(-x^2+9\). Función inferior (piso): \(x^2-9\).
+              </p>
+            </div>
+
+            <!-- Cálculo -->
+            <div class="rounded-xl p-4 mb-3" style="background:rgba(14,28,51,.04); border:1px solid rgba(14,28,51,.1);">
+              <p class="font-mono text-xs text-slate/60 tracking-wider uppercase mb-2">Planteo e integración</p>
+              \[A = \int_{-3}^{3}\bigl[(-x^2+9)-(x^2-9)\bigr]\,dx
+                 = \int_{-3}^{3}(-2x^2+18)\,dx\]
+              \[= \left[-\frac{2x^3}{3}+18x\right]_{-3}^{3}
+                 = \left(-18+54\right)-\left(18-54\right) = 36+36 = 72\]
+            </div>
+
+            <p class="font-body text-slate text-xs p-3 bg-white rounded-lg border border-amber-100">
+              💡 La región es simétrica respecto al eje \(y\), por lo que también puede calcularse como
+              \(2\int_0^3(-2x^2+18)\,dx = 72\). ✓
             </p>
-            \[\int_0^1 x\,e^{x^2}\,dx = \int_0^1 e^u\,\frac{du}{2} = \frac{1}{2}\Big[e^u\Big]_0^1
-               = \frac{1}{2}(e - 1) = \frac{e-1}{2} \approx 0{,}859\]
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Desafío 2 -->
-    <div class="practice-card rounded-2xl p-8 mb-8 text-white shadow-sm"
-      style="background:#0e1c33; border-color:#0e7a68;">
+    <!-- Ejercicio 5 — región encerrada por tres rectas oblicuas -->
+    <div class="practice-card bg-white rounded-2xl p-8 mb-8 shadow-sm"
+      style="border-color:#4338ca;">
       <div class="flex items-center gap-3 mb-4">
-        <span class="section-badge text-white" style="background:#0e7a68;">Desafío 2</span>
-        <span class="font-mono text-xs text-white/50">Área bajo la curva · sustitución + Barrow</span>
+        <span class="section-badge text-white" style="background:#4338ca;">Ejercicio 5</span>
+        <span class="font-mono text-xs text-slate">Región encerrada por tres rectas oblicuas</span>
       </div>
-      <p class="font-body text-white/80 leading-relaxed mb-3">
-        Calculá el área de la región comprendida entre la curva \(f(x) = x\,e^{x^2}\)
-        y el eje \(x\), para \(x \in [0, 1]\).
-      </p>
-      <p class="font-body text-white/45 text-xs mb-5">
-        Observación: verificá primero que \(f(x) \geq 0\) en el intervalo, para confirmar que la integral
-        coincide con el área geométrica. Luego aplicá la sustitución adecuada.
+      <p class="font-body text-slate leading-relaxed mb-4">
+        Calculá el área de la región encerrada por las rectas:
+        \[y = x + 1 \qquad y = -x + 7 \qquad y = \tfrac{1}{2}x + 1\]
       </p>
 
       <!-- Botón gráfica -->
-      <div class="mb-3">
-        <button onclick="togglePanel('graph5')"
-          class="font-body text-sm text-white/70 border border-white/20 rounded-xl px-5 py-2.5
-                 hover:bg-white/5 transition cursor-pointer bg-transparent flex items-center gap-2">
-          <span id="graph5-label">📈 Ver gráfica</span>
+      <div class="mt-5">
+        <button onclick="togglePanel('graph7')"
+          class="font-body text-sm text-ink border border-black/20 rounded-xl px-5 py-2.5
+                 hover:bg-black/5 transition cursor-pointer bg-transparent flex items-center gap-2">
+          <span id="graph7-label">📈 Ver gráfica</span>
           <span class="text-xs opacity-50">↓</span>
         </button>
-        <div id="graph5" class="collapsible mt-3">
-          <canvas id="canvas-d2" class="w-full rounded-xl border border-white/10"
-            style="background:rgba(255,255,255,.04); display:block;"></canvas>
+        <div id="graph7" class="collapsible mt-3">
+          <canvas id="canvas-ej5" class="w-full rounded-xl border border-black/8"
+            style="background:#f8fafc; display:block;"></canvas>
         </div>
       </div>
 
       <!-- Pista -->
-      <div class="mt-2">
-        <button onclick="togglePanel('hint5')"
-          class="font-body text-sm text-white/70 border border-white/20 rounded-xl px-5 py-2.5
-                 hover:bg-white/5 transition cursor-pointer bg-transparent flex items-center gap-2">
-          <span id="hint5-label">Pedir una pista</span>
+      <div class="mt-5">
+        <button onclick="togglePanel('hint7')"
+          class="font-body text-sm text-jade border border-jade/40 rounded-xl px-5 py-2.5
+                 hover:bg-jade/5 transition cursor-pointer bg-transparent flex items-center gap-2">
+          <span id="hint7-label">Pedir una pista</span>
           <span class="text-xs opacity-60">↓</span>
         </button>
-        <div id="hint5" class="collapsible mt-3">
-          <div class="bg-white/5 border border-white/15 rounded-xl p-5">
-            <p class="font-body text-white/70 text-sm leading-relaxed mb-2">
-              <strong class="text-white/90">Paso 1 — verificar signo:</strong>
-              En \([0,1]\), \(x \geq 0\) y \(e^{x^2} > 0\), por lo tanto \(f(x) \geq 0\).
-              La integral es directamente el área.
+        <div id="hint7" class="collapsible mt-3">
+          <div class="bg-jade/5 border border-jade/20 rounded-xl p-5">
+            <p class="font-body text-slate text-sm leading-relaxed mb-2">
+              <strong class="text-jade">Paso 1:</strong>
+              Hallá los tres vértices del triángulo igualando cada par de rectas.
+              Obtendrás tres puntos de intersección que definen la región.
             </p>
-            <p class="font-body text-white/70 text-sm">
-              <strong class="text-white/90">Paso 2 — sustitución:</strong>
-              Probá con \(u = x^2\). Entonces \(du = 2x\,dx\), o sea \(x\,dx = \tfrac{du}{2}\).
-              Transformá también los límites: \(x=0 \Rightarrow u=0\); \(x=1 \Rightarrow u=1\).
+            <p class="font-body text-slate text-sm mb-2">
+              <strong class="text-jade">Paso 2:</strong>
+              Identificá los límites de integración: el intervalo va del vértice de \(x\) menor al de \(x\) mayor.
+              Fijate que las rectas que forman el techo cambian en algún punto intermedio.
+            </p>
+            <p class="font-body text-slate text-sm">
+              <strong class="text-jade">Paso 3:</strong>
+              Subdividí el intervalo en ese punto y plantear \(A = A_1 + A_2\), integrando
+              función superior − función inferior en cada subintervalo.
             </p>
           </div>
         </div>
@@ -1980,31 +2142,72 @@
 
       <!-- Solución -->
       <div class="mt-3">
-        <button onclick="togglePanel('sol5')"
+        <button onclick="togglePanel('sol7')"
           class="font-body text-sm text-gold border border-gold/40 rounded-xl px-5 py-2.5
                  hover:bg-gold/5 transition cursor-pointer bg-transparent flex items-center gap-2">
-          <span id="sol5-label">Ver solución completa</span>
+          <span id="sol7-label">Ver solución completa</span>
           <span class="text-xs opacity-60">↓</span>
         </button>
-        <div id="sol5" class="collapsible mt-3">
-          <div class="rounded-xl p-5" style="background:rgba(14,122,104,.15); border:1px solid rgba(14,122,104,.4);">
-            <p class="font-body text-white/80 text-sm mb-3">
-              <strong style="color:#34d399;">Solución:</strong>
+        <div id="sol7" class="collapsible mt-3">
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-5">
+            <p class="font-body text-slate text-sm mb-4"><strong class="text-ink">Solución:</strong></p>
+
+            <!-- Vértices -->
+            <div class="rounded-xl p-4 mb-3" style="background:rgba(14,28,51,.04); border:1px solid rgba(14,28,51,.1);">
+              <p class="font-mono text-xs text-slate/60 tracking-wider uppercase mb-2">Vértices del triángulo</p>
+              <p class="font-body text-slate text-sm mb-1">
+                \(y=x+1\) ∩ \(y=\tfrac{1}{2}x+1\): \(x+1=\tfrac{1}{2}x+1 \Rightarrow x=0\) → \((0,\,1)\)
+              </p>
+              <p class="font-body text-slate text-sm mb-1">
+                \(y=x+1\) ∩ \(y=-x+7\): \(x+1=-x+7 \Rightarrow x=3\) → \((3,\,4)\)
+              </p>
+              <p class="font-body text-slate text-sm">
+                \(y=-x+7\) ∩ \(y=\tfrac{1}{2}x+1\): \(-x+7=\tfrac{1}{2}x+1 \Rightarrow x=4\) → \((4,\,3)\)
+              </p>
+            </div>
+
+            <!-- Planteo -->
+            <div class="rounded-xl p-4 mb-3 text-center" style="background:rgba(67,56,202,.06); border:1px solid rgba(67,56,202,.2);">
+              <p class="font-body text-slate text-sm mb-2">El intervalo va de \(x=0\) a \(x=4\). El techo cambia en \(x=3\):</p>
+              \[A = A_1 + A_2\]
+            </div>
+
+            <!-- A₁ -->
+            <div class="rounded-xl p-4 mb-3" style="background:rgba(14,122,104,.07); border:1px solid rgba(14,122,104,.25);">
+              <p class="font-mono text-xs text-jade mb-2 tracking-wider uppercase">A₁ — región \([0,\,3]\)</p>
+              <p class="font-body text-slate text-sm mb-2">
+                Verificación en \(x_0=1\): \(y=x+1\) da \(2\), \(y=\tfrac{1}{2}x+1\) da \(1{,}5\).
+                Función superior (techo): \(x+1\). Función inferior (piso): \(\tfrac{1}{2}x+1\).
+              </p>
+              \[A_1 = \int_0^3\left[(x+1)-\left(\tfrac{1}{2}x+1\right)\right]dx
+                = \int_0^3 \tfrac{1}{2}x\,dx
+                = \left[\frac{x^2}{4}\right]_0^3 = \frac{9}{4}\]
+            </div>
+
+            <!-- A₂ -->
+            <div class="rounded-xl p-4 mb-3" style="background:rgba(155,58,110,.07); border:1px solid rgba(155,58,110,.25);">
+              <p class="font-mono text-xs mb-2 tracking-wider uppercase" style="color:#9b3a6e;">A₂ — región \([3,\,4]\)</p>
+              <p class="font-body text-slate text-sm mb-2">
+                Verificación en \(x_0=3{,}5\): \(y=-x+7\) da \(3{,}5\), \(y=\tfrac{1}{2}x+1\) da \(2{,}75\).
+                Función superior (techo): \(-x+7\). Función inferior (piso): \(\tfrac{1}{2}x+1\).
+              </p>
+              \[A_2 = \int_3^4\left[(-x+7)-\left(\tfrac{1}{2}x+1\right)\right]dx
+                = \int_3^4\left(-\tfrac{3}{2}x+6\right)dx\]
+              \[= \left[-\frac{3x^2}{4}+6x\right]_3^4
+                = (-12+24)-\left(-\frac{27}{4}+18\right)
+                = 12 - \frac{45}{4} = \frac{3}{4}\]
+            </div>
+
+            <!-- Resultado -->
+            <div class="rounded-xl p-4 mb-3 text-center" style="background:rgba(201,147,58,.1); border:1.5px solid rgba(201,147,58,.35);">
+              \[A = A_1 + A_2 = \frac{9}{4} + \frac{3}{4} = 3\]
+            </div>
+
+            <p class="font-body text-slate text-xs p-3 bg-white rounded-lg border border-amber-100">
+              💡 Ninguna de las tres rectas es horizontal ni paralela al eje \(x\), por eso
+              la región no tiene un "piso" fijo — en cada subintervalo el piso es una recta diferente.
+              Ese es exactamente el punto que distingue este ejercicio de los anteriores.
             </p>
-            <div class="flex gap-3 items-start mb-3">
-              <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 text-white" style="background:#0e7a68;">1</div>
-              <p class="font-body text-white/70 text-sm">\(x \geq 0\) y \(e^{x^2} > 0\) en \([0,1]\), entonces \(f \geq 0\): la integral coincide con el área.</p>
-            </div>
-            <div class="flex gap-3 items-start mb-3">
-              <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 text-white" style="background:#0e7a68;">2</div>
-              <p class="font-body text-white/70 text-sm">Sustitución \(u = x^2\): \(x\,dx = \tfrac{du}{2}\). Límites: \(0 \to 0\), \(1 \to 1\).</p>
-            </div>
-            <div class="flex gap-3 items-start">
-              <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 text-white" style="background:#0e7a68;">3</div>
-              <div class="flex-1">
-                \[A = \int_0^1 x\,e^{x^2}\,dx = \frac{1}{2}\int_0^1 e^u\,du = \frac{1}{2}\Big[e^u\Big]_0^1 = \frac{e-1}{2} \approx 0{,}859\]
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -2153,18 +2356,18 @@
       graph1: ['📈 Ver gráfica', '📈 Ocultar gráfica'],
       graph2: ['📈 Ver gráfica', '📈 Ocultar gráfica'],
       graph3: ['📈 Ver gráfica', '📈 Ocultar gráfica'],
-      graph4: ['📈 Ver gráfica', '📈 Ocultar gráfica'],
-      graph5: ['📈 Ver gráfica', '📈 Ocultar gráfica'],
-      hint1: ['Pedir una pista',       'Ocultar pista'],
-      hint2: ['Pedir una pista',       'Ocultar pista'],
-      hint3: ['Pedir una pista',       'Ocultar pista'],
-      hint4: ['Pedir una pista',       'Ocultar pista'],
-      hint5: ['Pedir una pista',       'Ocultar pista'],
+      graph6: ['📈 Ver gráfica', '📈 Ocultar gráfica'],
+      graph7: ['📈 Ver gráfica', '📈 Ocultar gráfica'],
+      hint1: ['Pedir una pista', 'Ocultar pista'],
+      hint2: ['Pedir una pista', 'Ocultar pista'],
+      hint3: ['Pedir una pista', 'Ocultar pista'],
+      hint6: ['Pedir una pista', 'Ocultar pista'],
+      hint7: ['Pedir una pista', 'Ocultar pista'],
       sol1:  ['Ver solución completa', 'Ocultar solución'],
       sol2:  ['Ver solución completa', 'Ocultar solución'],
       sol3:  ['Ver solución completa', 'Ocultar solución'],
-      sol4:  ['Ver solución completa', 'Ocultar solución'],
-      sol5:  ['Ver solución completa', 'Ocultar solución'],
+      sol6:  ['Ver solución completa', 'Ocultar solución'],
+      sol7:  ['Ver solución completa', 'Ocultar solución'],
     };
     const labelEl = document.getElementById(`${id}-label`);
     if (labelEl && labelMap[id]) {
@@ -2189,7 +2392,7 @@
      nitidez en pantallas HiDPI.
   ═════════════════════════════════════════════════ */
 
-  function setupCanvas(id, xMin, xMax, yMin, yMax) {
+  function setupCanvas(id, xMin, xMax, yMin, yMax, skipXLabels = false) {
     const canvas = document.getElementById(id);
     if (!canvas) return null;
 
@@ -2265,11 +2468,12 @@
     ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = dpr;
     for (let gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
       ctx.beginPath(); ctx.moveTo(mx(gx),my(yAxis0)-3*dpr); ctx.lineTo(mx(gx),my(yAxis0)+3*dpr); ctx.stroke();
-      if (gx === 0 && xMin <= 0 && xMax >= 0) continue; // no repetir 0 con eje Y
+      if (skipXLabels) continue;
+      if (gx === 0 && xMin <= 0 && xMax >= 0) continue;
       ctx.fillText(gx, mx(gx), my(yAxis0)+16*dpr);
     }
-    // Etiqueta 0 solo si ambos ejes visibles
-    if (xMin <= 0 && xMax >= 0 && yMin <= 0 && yMax >= 0) {
+    // Etiqueta 0 solo si ambos ejes visibles y no se suprimen etiquetas
+    if (!skipXLabels && xMin <= 0 && xMax >= 0 && yMin <= 0 && yMax >= 0) {
       ctx.fillText('0', mx(0)-10*dpr, my(0)+16*dpr);
     }
     ctx.restore();
@@ -2425,8 +2629,314 @@
   // Mapa de colapsable → función de dibujo
   const graphDrawers = {
     graph1: drawEj1, graph2: drawEj2, graph3: drawEj3,
-    graph4: drawD1,  graph5: drawD2,
+    graph6: drawEj4, graph7: drawEj5,
   };
+
+  /* ── Ejercicio 4: f(x)=−x²+9 y g(x)=x²−9 en [−3,3] ── */
+  function drawEj4() {
+    const s = setupCanvas('canvas-ej4', -4, 4, -11, 11);
+    if (!s) return;
+    const {ctx, mx, my, dpr} = s;
+    const f = x => -x*x + 9;
+    const g = x => x*x - 9;
+    fillBetween(ctx, f, g, mx, my, -3, 3, 'rgba(180,83,9,.15)');
+    drawCurve(ctx, f, mx, my, -3.8, 3.8, '#b45309', 2.3*dpr);
+    drawCurve(ctx, g, mx, my, -3.8, 3.8, '#64748b', 2*dpr, [6*dpr,4*dpr]);
+    [-3, 3].forEach(xv => {
+      ctx.save();
+      ctx.strokeStyle = '#b45309'; ctx.lineWidth = 1.2*dpr;
+      ctx.setLineDash([4*dpr, 3*dpr]);
+      ctx.beginPath(); ctx.moveTo(mx(xv), my(f(xv))); ctx.lineTo(mx(xv), my(g(xv))); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#b45309';
+      ctx.beginPath(); ctx.arc(mx(xv), my(f(xv)), 3.5*dpr, 0, 2*Math.PI); ctx.fill();
+      ctx.beginPath(); ctx.arc(mx(xv), my(g(xv)), 3.5*dpr, 0, 2*Math.PI); ctx.fill();
+      ctx.restore();
+    });
+    label(ctx, mx, my,  0,  10,  'f(x) = −x²+9', '#b45309', 'rgba(248,250,252,.0)', dpr);
+    label(ctx, mx, my,  2.5, -6, 'g(x) = x²−9',  '#64748b', 'rgba(248,250,252,.0)', dpr);
+    label(ctx, mx, my,  0,   2,  'A = 72',        '#b45309', 'rgba(255,247,237,.88)', dpr);
+  }
+
+  /* ── Ejercicio 5: triángulo y=x+1, y=−x+7, y=½x+1 ── */
+  /* Vértices: (0,1), (3,4), (4,3) */
+  function drawEj5() {
+    const s = setupCanvas('canvas-ej5', -0.5, 5.5, 0, 5.5);
+    if (!s) return;
+    const {ctx, mx, my, dpr} = s;
+    const r1 = x => x + 1;
+    const r2 = x => -x + 7;
+    const r3 = x => 0.5*x + 1;
+
+    // A₁ — [0,3] techo r1 piso r3 — azul índigo
+    fillBetween(ctx, r1, r3, mx, my, 0, 3, 'rgba(67,56,202,.18)');
+    // A₂ — [3,4] techo r2 piso r3 — rose
+    fillBetween(ctx, r2, r3, mx, my, 3, 4, 'rgba(155,58,110,.18)');
+
+    // Curvas extendidas
+    drawCurve(ctx, r1, mx, my, -0.3, 3.8,  '#4338ca', 2.3*dpr);
+    drawCurve(ctx, r2, mx, my,  2.2, 5.2,  '#9b3a6e', 2.3*dpr);
+    drawCurve(ctx, r3, mx, my, -0.3, 5.2,  '#0e7a68', 2*dpr, [6*dpr,4*dpr]);
+
+    // Vértices marcados
+    [[0,1],[3,4],[4,3]].forEach(([xv,yv]) => {
+      ctx.save();
+      ctx.fillStyle = '#4338ca';
+      ctx.beginPath(); ctx.arc(mx(xv), my(yv), 3.5*dpr, 0, 2*Math.PI); ctx.fill();
+      ctx.restore();
+    });
+
+    // Línea punteada en x=3 (cambio de techo)
+    ctx.save();
+    ctx.strokeStyle = '#b45309'; ctx.lineWidth = 1.4*dpr;
+    ctx.setLineDash([4*dpr, 3*dpr]);
+    ctx.beginPath(); ctx.moveTo(mx(3), my(r1(3))); ctx.lineTo(mx(3), my(r3(3))); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // Etiquetas curvas
+    label(ctx, mx, my, 1.2, 3.2,  'y = x+1',   '#4338ca', 'rgba(248,250,252,.0)', dpr);
+    label(ctx, mx, my, 4.2, 3.6,  'y = −x+7',  '#9b3a6e', 'rgba(248,250,252,.0)', dpr);
+    label(ctx, mx, my, 4.2, 2.2,  'y = ½x+1',  '#0e7a68', 'rgba(248,250,252,.0)', dpr);
+
+    // Etiquetas A₁ y A₂ centradas en cada región — sin valor
+    label(ctx, mx, my, 1.5, 2.4, 'A₁', '#4338ca', 'rgba(237,233,254,.88)', dpr);
+    label(ctx, mx, my, 3.5, 2.6, 'A₂', '#9b3a6e', 'rgba(255,241,242,.88)', dpr);
+  }
+
+  /* ── Caso C: sin x y cos x en [0,π] ── */
+  function drawCasoC() {
+    const PI = Math.PI;
+    const s = setupCanvas('canvas-casoC', -0.18, PI + 0.25, -1.38, 1.45, true);
+    if (!s) return;
+    const {ctx, mx, my, dpr} = s;
+    const f = x => Math.sin(x);
+    const g = x => Math.cos(x);
+    const c = PI / 4;
+
+    // Regiones coloreadas
+    fillBetween(ctx, g, f, mx, my, 0,   c,  'rgba(14,122,104,.15)');
+    fillBetween(ctx, f, g, mx, my, c,  PI,  'rgba(155,58,110,.15)');
+
+    // Curvas extendidas (más allá del intervalo, sin relleno)
+    drawCurve(ctx, g, mx, my, -0.12, PI+0.2, '#0e7a68', 2.3*dpr);   // cos x — jade
+    drawCurve(ctx, f, mx, my, -0.12, PI+0.2, '#9b3a6e', 2.3*dpr);   // sin x — rose
+
+    // Línea punteada vertical en x = π/4 (punto de cruce)
+    ctx.save();
+    ctx.strokeStyle = '#b45309'; ctx.lineWidth = 1.2*dpr;
+    ctx.setLineDash([4*dpr, 3*dpr]);
+    ctx.beginPath(); ctx.moveTo(mx(c), my(g(c))); ctx.lineTo(mx(c), my(0)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // Líneas verticales en x=0 y x=π (límites del intervalo)
+    ctx.save();
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = dpr;
+    ctx.setLineDash([3*dpr, 3*dpr]);
+    ctx.beginPath(); ctx.moveTo(mx(PI), my(f(PI))); ctx.lineTo(mx(PI), my(0)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // Punto de cruce marcado
+    ctx.save();
+    ctx.fillStyle = '#b45309';
+    ctx.beginPath(); ctx.arc(mx(c), my(g(c)), 3.5*dpr, 0, 2*Math.PI); ctx.fill();
+    ctx.restore();
+
+    // Etiqueta 0 manual
+    ctx.save();
+    ctx.font = `${Math.round(11*dpr)}px "Fira Code", monospace`;
+    ctx.fillStyle = '#64748b'; ctx.textAlign = 'center';
+    ctx.fillText('0', mx(0) - 10*dpr, my(0) + 16*dpr);
+    ctx.restore();
+
+    // Etiquetas eje x en términos de π (reemplazar los números enteros)
+    // Limpiar zona de etiquetas del eje x y redibujar con π
+    const piLabels = [
+      { val: PI/4,   text: 'π/4' },
+      { val: PI/2,   text: 'π/2' },
+      { val: 3*PI/4, text: '3π/4' },
+      { val: PI,     text: 'π' },
+    ];
+    ctx.save();
+    ctx.font = `${Math.round(11*dpr)}px "Fira Code", monospace`;
+    ctx.fillStyle = '#64748b';
+    ctx.textAlign = 'center';
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = dpr;
+    piLabels.forEach(({val, text}) => {
+      ctx.beginPath();
+      ctx.moveTo(mx(val), my(0) - 3*dpr);
+      ctx.lineTo(mx(val), my(0) + 3*dpr);
+      ctx.stroke();
+      ctx.fillText(text, mx(val), my(0) + 16*dpr);
+    });
+    ctx.restore();
+
+    // Etiqueta especial π/4 en color terracota
+    ctx.save();
+    ctx.font = `${Math.round(11*dpr)}px "Fira Code", monospace`;
+    ctx.fillStyle = '#b45309'; ctx.textAlign = 'center';
+    ctx.fillText('π/4', mx(c), my(0) + 16*dpr);
+    ctx.restore();
+
+    // Etiquetas curvas
+    label(ctx, mx, my, 0.22,  1.18, 'cos x', '#0e7a68', 'rgba(248,250,252,.0)', dpr);
+    label(ctx, mx, my, 2.1,   1.12, 'sin x', '#9b3a6e', 'rgba(248,250,252,.0)', dpr);
+
+    // Etiquetas área — centradas en cada región
+    // A₁: región [0, π/4], cos≥sin → centroide aprox x=π/8, y promedio ≈ (cos(π/8)+sin(π/8))/2 ≈ 0.65
+    label(ctx, mx, my, PI/8,        0.52, 'A₁', '#0e7a68', 'rgba(220,252,244,.88)', dpr);
+    // A₂: región [π/4, π], sin≥cos → centroide aprox x=5π/8, y promedio ≈ 0.38
+    label(ctx, mx, my, PI*5/8,      0.38, 'A₂', '#9b3a6e', 'rgba(255,241,242,.88)', dpr);
+  }
+
+  /* ── Caso D: sin x en [0, 2π] — dos regiones ── */
+  function drawCasoD() {
+    const PI = Math.PI;
+    const s = setupCanvas('canvas-casoD', -0.2, 2*PI + 0.3, -1.38, 1.45, true);
+    if (!s) return;
+    const {ctx, mx, my, dpr} = s;
+    const f = x => Math.sin(x);
+    const g = x => 0;
+
+    // Regiones coloreadas
+    fillBetween(ctx, f, g, mx, my, 0,   PI,   'rgba(14,122,104,.15)');
+    fillBetween(ctx, g, f, mx, my, PI, 2*PI,  'rgba(155,58,110,.15)');
+
+    // Curva extendida más allá del intervalo
+    drawCurve(ctx, f, mx, my, -0.12, 2*PI+0.2, '#0e1c33', 2.3*dpr);
+
+    // Líneas punteadas verticales en x = π y x = 2π
+    [PI, 2*PI].forEach(xv => {
+      ctx.save();
+      ctx.strokeStyle = '#b45309'; ctx.lineWidth = 1.2*dpr;
+      ctx.setLineDash([4*dpr, 3*dpr]);
+      ctx.beginPath();
+      ctx.moveTo(mx(xv), my(f(xv) < 0 ? f(xv) : 0));
+      ctx.lineTo(mx(xv), my(0));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    });
+
+    // Puntos en intersecciones con el eje
+    [0, PI, 2*PI].forEach(xv => {
+      ctx.save();
+      ctx.fillStyle = '#b45309';
+      ctx.beginPath(); ctx.arc(mx(xv), my(0), 3.5*dpr, 0, 2*Math.PI); ctx.fill();
+      ctx.restore();
+    });
+
+    // Etiqueta 0 manual
+    ctx.save();
+    ctx.font = `${Math.round(11*dpr)}px "Fira Code", monospace`;
+    ctx.fillStyle = '#64748b'; ctx.textAlign = 'center';
+    ctx.fillText('0', mx(0) - 10*dpr, my(0) + 16*dpr);
+    ctx.restore();
+
+    // Etiquetas eje x en π
+    const piLabels = [
+      { val: PI/2,   text: 'π/2' },
+      { val: PI,     text: 'π' },
+      { val: 3*PI/2, text: '3π/2' },
+      { val: 2*PI,   text: '2π' },
+    ];
+    ctx.save();
+    ctx.font = `${Math.round(11*dpr)}px "Fira Code", monospace`;
+    ctx.fillStyle = '#64748b'; ctx.textAlign = 'center';
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = dpr;
+    piLabels.forEach(({val, text}) => {
+      ctx.beginPath();
+      ctx.moveTo(mx(val), my(0)-3*dpr);
+      ctx.lineTo(mx(val), my(0)+3*dpr);
+      ctx.stroke();
+    });
+    ctx.restore();
+
+    // Etiquetas π en terracota, resto en slate
+    ctx.save();
+    ctx.font = `${Math.round(11*dpr)}px "Fira Code", monospace`;
+    ctx.textAlign = 'center';
+    piLabels.forEach(({val, text}) => {
+      ctx.fillStyle = (text === 'π' || text === '2π') ? '#b45309' : '#64748b';
+      ctx.fillText(text, mx(val), my(0) + 16*dpr);
+    });
+    ctx.restore();
+
+    // Etiqueta curva
+    label(ctx, mx, my, PI/2, 1.18, 'f(x) = sin x', '#0e1c33', 'rgba(248,250,252,.0)', dpr);
+
+    // Etiquetas área — solo A₁ y A₂, sin valores
+    // A₁: región [0, π], sin≥0 → centroide x=π/2, y≈0.45
+    label(ctx, mx, my, PI/2,     0.45, 'A₁', '#0e7a68', 'rgba(220,252,244,.88)', dpr);
+    // A₂: región [π, 2π], sin≤0 → centroide x=3π/2, y≈-0.45
+    label(ctx, mx, my, PI*3/2,  -0.45, 'A₂', '#9b3a6e', 'rgba(255,241,242,.88)', dpr);
+
+    // Nota integral algebraica
+    ctx.save();
+    ctx.font = `italic ${Math.round(11*dpr)}px "DM Sans", sans-serif`;
+    ctx.fillStyle = 'rgba(14,28,51,.38)';
+    ctx.textAlign = 'center';
+    ctx.fillText('∫₀²π sin x dx = 0  (las dos mitades se cancelan con signo)', mx(PI), my(-1.24));
+    ctx.restore();
+  }
+
+  /* ── Caso B: f(x)=4−x², g(x)=x+2, intersecciones en x=−2 y x=1 ── */
+  function drawCasoB() {
+    const s = setupCanvas('canvas-casoB', -2.8, 1.8, -1.5, 5.5);
+    if (!s) return;
+    const {ctx, mx, my, dpr} = s;
+    const f = x => 4 - x*x;
+    const g = x => x + 2;
+
+    // Región entre curvas
+    fillBetween(ctx, f, g, mx, my, -2, 1, 'rgba(180,83,9,.13)');
+
+    // Curvas extendidas
+    drawCurve(ctx, f, mx, my, -2.7, 1.7, '#b45309', 2.3*dpr);
+    drawCurve(ctx, g, mx, my, -2.7, 1.7, '#64748b', 2*dpr, [6*dpr, 4*dpr]);
+
+    // Líneas punteadas verticales en intersecciones x=−2 y x=1
+    [-2, 1].forEach(xv => {
+      ctx.save();
+      ctx.strokeStyle = '#b45309'; ctx.lineWidth = 1.2*dpr;
+      ctx.setLineDash([4*dpr, 3*dpr]);
+      ctx.beginPath();
+      ctx.moveTo(mx(xv), my(f(xv)));
+      ctx.lineTo(mx(xv), my(0));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+      // Punto de intersección
+      ctx.save();
+      ctx.fillStyle = '#b45309';
+      ctx.beginPath(); ctx.arc(mx(xv), my(f(xv)), 3.5*dpr, 0, 2*Math.PI); ctx.fill();
+      ctx.restore();
+    });
+
+    // Marcas en eje x
+    ctx.save();
+    ctx.font = `${Math.round(11*dpr)}px "Fira Code", monospace`;
+    ctx.fillStyle = '#b45309'; ctx.textAlign = 'center';
+    ctx.fillText('-2', mx(-2), my(0) + 16*dpr);
+    ctx.fillText('1',  mx(1),  my(0) + 16*dpr);
+    ctx.restore();
+
+    // Etiquetas curvas
+    label(ctx, mx, my, -0.3, 4.8, 'f(x) = 4−x²', '#b45309', 'rgba(248,250,252,.0)', dpr);
+    label(ctx, mx, my,  1.4, 2.6, 'g(x) = x+2',  '#64748b', 'rgba(248,250,252,.0)', dpr);
+
+    // Etiqueta área
+    label(ctx, mx, my, -0.6, 2.8, 'A = 9/2', '#b45309', 'rgba(255,247,237,.88)', dpr);
+  }
+
+  // Dibujar casos B, C y D al cargar
+  window.addEventListener('load', () => {
+    drawCasoB();
+    drawCasoC();
+    drawCasoD();
+  });
 
   // Dibujar cuando se abre el colapsable (hook en togglePanel)
   const _origToggle = togglePanel;
